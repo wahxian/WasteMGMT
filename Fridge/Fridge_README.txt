@@ -1,0 +1,1 @@
+This module consist of a UHF RFID module connected to a Raspberry pi to send information over the cloud

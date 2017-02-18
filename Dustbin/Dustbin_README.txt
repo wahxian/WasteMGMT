@@ -1,0 +1,1 @@
+This module consist of ESP8266, HCSR04 and weight sensors which will be connected to the cloud
