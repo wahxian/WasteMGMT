@@ -81,6 +81,19 @@ void loop() {
     client.print(body);
     client.print("\n\n");
 
+    //Using JSON to update channel feed
+    // client.print("POST https://api.thingspeak.com/update.json\n");
+    // client.print("api_key=" + writeAPIKey + "\n");
+    // client.print("Content-Length: "); 
+    // client.print(body.length());
+    // client.print("\n\n");
+    // client.print(body);
+    // client.print("\n\n");
+    // client.print(body+"\n");
+    // client.print("\n\n");
+
+    client.print("POST https://api.thingspeak.com/update.json?api_key="+writeAPIKey+"&"+body+"&"body2+"\n")
+
   }
   client.stop();  //Stop connecting to Thingspeak server
 

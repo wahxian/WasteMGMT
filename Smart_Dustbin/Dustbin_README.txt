@@ -5,4 +5,7 @@ This module consist of ESP8266, HCSR04 and weight sensors which will be connecte
 3. HC SR04 interfaced using library from 
 
 Resources:
-1. https://github.com/sparkfun/HX711-Load-Cell-Amplifier
+1. HX711 and Load cell Library: https://github.com/sparkfun/HX711-Load-Cell-Amplifier
+2. ESP8266WiFi Library: https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WiFi 
+3. Temp and Humidity Sensor: https://github.com/adafruit/DHT-sensor-library 
+4. Ultrasonic Range Finder Library: https://github.com/JRodrigoTech/Ultrasonic-HC-SR04
