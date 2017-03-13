@@ -1,30 +1,27 @@
 /*
- ESP8266 --> ThingSpeak Channel via MKR1000 Wi-Fi
- 
- This sketch sends the Wi-Fi Signal Strength (RSSI) of an ESP8266 to a ThingSpeak
- channel using the ThingSpeak API (https://www.mathworks.com/help/thingspeak).
- 
- Requirements:
- 
-   * ESP8266 Wi-Fi Device
-   * Arduino 1.6.9+ IDE
-   * Additional Boards URL: http://arduino.esp8266.com/stable/package_esp8266com_index.json
-   * Library: esp8266 by ESP8266 Community
- 
- ThingSpeak Setup:
- 
-   * Sign Up for New User Account - https://thingspeak.com/users/sign_up
-   * Create a new Channel by selecting Channels, My Channels, and then New Channel
-   * Enable one field
-   * Note the Channel ID and Write API Key
-    
- Setup Wi-Fi:
-  * Enter SSID
-  * Enter Password
-  
- Tutorial: http://nothans.com/measure-wi-fi-signal-levels-with-the-esp8266-and-thingspeak
-   
- Created: Feb 1, 2017 by Hans Scharler (http://nothans.com)
+
+    Quick and Dirty Code for sending weght, volume, humidity, temperature and heat index data
+    up to ThingSpeak for data visualisation.
+
+    Setup for ThingSpeak:
+    1. Update SSID, Password, ChannelID, writeAPIKey, postingInterval 
+
+    Setup OF HX711 with load cell: 
+    1. Connection load cell to HX711: Red(E+) Black(E-) White(A+) Green(A-)
+    2. HX711 to ESP8266: GND, DT(SCALEDOUT:GPIO12(D6)), SCK(GPIO14(D5)), VCC(2.6-5.5V)
+
+    Setup for HC-SR04 (3.3V compatible):
+    1. HCSR-04 to ESP8266: TRIGGER(RANGETRIG:GPIO5(D1)), ECHO(RANGEECHO:GPIO4(D2)), GND, VCC(3.3V)
+    #Try with 5V for now and using potential divider
+
+    Setup for DHT Humidity and Temp Sensor (Blue side facing up):
+    1. Seria Data (DHTPIN:GPIO2(D4)), VCC (3.5-5.5V), GND
+    #Mapping VCC, Data, NC, GND
+
+    TODO 14/3/2017
+    1. Solder wires to Load Cell
+    2. Test out individually DHT(OK), HX711, HCSR04
+
 */
 
 #include <ESP8266WiFi.h>
@@ -49,9 +46,13 @@ const int postingInterval = 20 * 1000; // post data every 20 seconds
 //---------------------HX711 and weight sensor settings-----------------------------------------
 #define DHTPIN 2        //Digital data pin of DHT
 #define DHTTYPE DHT11   
+#define SCALEDOUT 12
+#define SCALESCK 14
+#define RANGETRIG 5
+#define RANGEECHO 4
 
-HX711 scale(A1,A0);
-Ultrasonic ultrasonic(9,8);
+HX711 scale(SCALEDOUT,SCALESCK);    //Default gain of 128 used
+Ultrasonic ultrasonic(RANGETRIG,RANGEECHO);
 DHT dht(DHTPIN, DHTTYPE);
 
 const int radius 10;    //radius of round dustbin in cm
@@ -90,10 +91,10 @@ void loop() {
     // Read temperature as Fahrenheit (isFahrenheit = true)
     //float f = dht.readTemperature(true);
     // Compute heat index in Fahrenheit (the default)
-    float heatIndex = dht.computeHeatIndex(f, h);
+    float heatIndex = dht.computeHeatIndex(temperature, humidity);
     // Compute heat index in Celsius (isFahreheit = false)
     //float hic = dht.computeHeatIndex(t, h, false);
-    if (isnan(h) || isnan(t) || isnan(f)) {
+    if (isnan(humidity) || isnan(temperature) || isnan(heatIndex)) {
         Serial.println("Failed to read from DHT sensor!");
         return;
     }
